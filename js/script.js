@@ -28,7 +28,9 @@ $tColor.children('option[value="dimgrey"]').css('display','none');
 $tColor.val("default");
 }
 
-// hideColours();
+hideColours();
+
+//Function that only shows the relevant t-shirt colours, depending on the user's design choice.
 
 $tDesign = $('#design');
 $tDesign.on('change', function() {
