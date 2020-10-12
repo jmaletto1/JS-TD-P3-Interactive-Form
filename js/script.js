@@ -5,9 +5,14 @@ function selectFocus(element) {
 //Call the selectFocus function, which sets the User's input to the Name input.
 selectFocus("name");
 
-//Hides the "Your Job Role" (other) field and label
+// Hides the "Your Job Role" (other) field and label
+
 $('#other-title').hide();
 $('#other-title-label').hide();
+
+/* This 'on' event listens out for a change in the 'Job Role' field. 
+If the input is set to "Other", then the additional field is displayed.
+The field is then removed if the user switches back to a different field.*/
 
 $('#title').on('change', function() {
 if ($('#title').val() === "other") {
@@ -16,29 +21,17 @@ if ($('#title').val() === "other") {
 else if ($('#title').val() !== "other") {
 	$('#other-title').hide();
 	$('#other-title-label').hide();
-}
-})
+}})
 
-//T-Shirt Info Function
+// T-Shirt Info Function
 
 const $tColor = $('#color');
 const $themeDefault = `<option value="default">Please select a T-shirt theme</option>`;
 $tColor.prepend($themeDefault);
 $tColor.val("default");
 
-//Hide Colours
-
-// function hideColours() {
-// $tColor.children('option[value="cornflowerblue"]').css('display','none');
-// $tColor.children('option[value="darkslategrey"]').css('display','none');
-// $tColor.children('option[value="gold"]').css('display','none');
-// $tColor.children('option[value="tomato"]').css('display','none');
-// $tColor.children('option[value="steelblue"]').css('display','none');
-// $tColor.children('option[value="dimgrey"]').css('display','none');
-// $tColor.val("default");
-// }
-
-// hideColours();
+/* These "hide" and "show" colour functions will be called on in the following section, 
+depending on which design is selected*/
 
 function hideAllColours() {
 $tColor.hide();	
@@ -52,7 +45,7 @@ $tColor.prev().show();
 
 hideAllColours();
 
-// Show Relevant T-Shirt Colours
+// This function sets or hides the relevant t-shirt colours, depending on the user's design selection.
 
 $tDesign = $('#design');
 $tDesign.on('change', function() {
@@ -84,11 +77,14 @@ hideColours();
 }); 
 
 
-// Add Price Function
+// Set the variables for the pricing section
+
 $activities = $('.activities');
 let priceValue = '0';
 $totalPrice = `<p class="priceClass">Price: $${priceValue}</p>`;
 
+/* This function updates the price depending on two factors - the amount, and the symbol.
+When a checkbox is checked, a "+" symbol is sent to the function, increasing the price. When unchecked, a "-" is sent.*/
 
 function priceMaker(value, factor) {
 if (factor === '+') {
@@ -104,12 +100,15 @@ return priceValue;
 }
 }
 
+/* The "Hide activities" section below was simplified by adding this function.
+The function simply removes the current price, before passing the new values on to the priceMaker function.*/
+
 function valueEditor(value, symbol) {
 	$('.priceClass').remove();
 	priceMaker(value, symbol);
 }
 
-// Hide other activities Functions/Listeners
+// Here, we update the price depending on the user's selection(s). Conflicting activities are also greyed out where necessary.
 
 $('input[name="all"]').change(function () {
 	if (this.checked) {
@@ -169,7 +168,9 @@ if (this.checked) {
 }})
 
 
-//Select Credit Card by Default
+/* Here I've set the default payment method to Credit Card, by hiding the other options.
+I've also set a variable called "cardCall", which will be used to determine 
+whether the regex is carried out against the user's Credit Card details.*/
 
 $('#payment').val('credit card');
 $('#paypal').hide();
@@ -178,6 +179,7 @@ $("#payment option[value='select method']").remove();
 let cardCall = true;
 
 // Payment Field Selector Function
+
 $('#payment').on('change', function () {
 if ($('#payment').val() === "paypal") {
 	$('#credit-card').hide();
@@ -197,8 +199,11 @@ if ($('#payment').val() === "paypal") {
 }
 })
 
+/* This section listens to the "name" field using a .keyup() listener. 
+If the user's name is less than four letters, a message will be appended to the H1 above until resolved*/
+
 $('#name').keyup(function () {
-if ($('#name').val().length < 4) {
+if ($('#name').val().length > 0 && $('#name').val().length < 4) {
 	$('form h2').remove();	
 	$('#name').css("border-color", "red").prev().css("color", "red");
 	$('form').prepend(`<h2 style="color:red">Please enter a name that is four letters or longer</h1>`);
@@ -206,12 +211,24 @@ if ($('#name').val().length < 4) {
 	$('#name').css("border-color", "black").prev().css("color", "black");
 	$('form h2').remove();	
 	}
-
 })
+
+/* FORM Submission.
+This section first listens for a 'submit' event on the form.
+When received, it sets the values for the Name, Email, Activities checkboxes, Credit Card Number, Zip and CVV.
+It also sets the regex requirements for each value.
+The function then progresses to check each regex test result for a negative value. If received, the border
+of the relevant field is set to red. The preventDefault() function is also called in each instance.
+
+I gave the credit card field some additional functionality by adding a placeholder message if the user doesn't
+submit a card number. This is naturally replaced by the user typing a number in.
+Additionally, if they do not provide a number that is between 13-16 digits, a message will be appended beneath
+the input requiring them to do so.
+*/
 
 $("form").on('submit', function(e) {
 	const nameTest = $('#name').val();
-	const nameResult = /^[A-Za-z]+\s[A-Za-z]+$/.test(nameTest);
+	const nameResult = /^[A-Za-z]+$/.test(nameTest);
 	const emailTest = $('#mail').val();
 	const emailResult = (/^[^@]+@[^@.]+\.[a-z]+$/i.test(emailTest));
 	const isChecked = $('input:checkbox').is(':checked');
@@ -226,10 +243,8 @@ $("form").on('submit', function(e) {
 		e.preventDefault();
 		$('#name').css("border-color", "red").prev().css("color", "red");
 		selectFocus("name");
-		// $('form').prepend(`<h1>Error!</h1>`);
 	} else {
 		$('#name').css("border-color", "black").prev().css("color", "black");
-		// $('form h1').remove();
 } if (emailResult === false) {
 		e.preventDefault();
 		$('#mail').css("border-color", "red").prev().css("color", "red");
@@ -248,8 +263,7 @@ $("form").on('submit', function(e) {
 			e.preventDefault();
 			if ($('#cc-num').val() === "") {
 				$('#cc-num').attr("placeholder", "Please enter a credit card number");
-			} else if ($('#cc-num').val().length > 16 || $('#cc-num').val().length < 13) {
-				// $('#cc-num').prev().remove();
+			} else if ($('#cc-num').val().length > 16 || $('#cc-num').val().length < 13 || !cardResult) {
 				$('.warning').remove();
 				$('#cc-num').css("border-color", "red").parent().append("<div class='warning'><b><p style='color:red'>Please add a 13-16 Digit Card Number!</p></b><br></div>");
 			}
