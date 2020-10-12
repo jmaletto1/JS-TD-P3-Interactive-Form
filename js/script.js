@@ -52,7 +52,7 @@ $tColor.prev().show();
 
 hideAllColours();
 
-//Function that only shows the relevant t-shirt colours, depending on the user's design choice.
+// Show Relevant T-Shirt Colours
 
 $tDesign = $('#design');
 $tDesign.on('change', function() {
@@ -104,84 +104,69 @@ return priceValue;
 }
 }
 
+function valueEditor(value, symbol) {
+	$('.priceClass').remove();
+	priceMaker(value, symbol);
+}
+
 // Hide other activities Functions/Listeners
+
 $('input[name="all"]').change(function () {
 	if (this.checked) {
-	$('.priceClass').remove();
-	priceMaker(200, "+");
+	valueEditor(200, "+");
 } else if (this.checked === false) {
-	$('.priceClass').remove();
-	priceMaker(200, "-");
-}
-})
+	valueEditor(200, "-");
+}})
 
 $('input[name="js-frameworks"]').change(function () {
 if (this.checked) {
-	$('.priceClass').remove();
-	priceMaker(100, "+");
+	valueEditor(100, "+");
 	$('input[name="express"]').prop('disabled', true).parent().css("opacity", "0.5");
 } else if (this.checked === false) {
-	$('.priceClass').remove();
-	priceMaker(100, "-");
+	valueEditor(100, "-");
 	$('input[name="express"]').prop('disabled', false).parent().css("opacity", "1.0");
-}
-})
+}})
 
 $('input[name="js-libs"]').change(function () {
 if (this.checked) {
-	$('.priceClass').remove();
-	priceMaker(100, "+");
+	valueEditor(100, "+");
 	$('input[name="node"]').prop('disabled', true).parent().css("opacity", "0.5");
 } else if (this.checked === false) {
-	$('.priceClass').remove();
-	priceMaker(100, "-");
+	valueEditor(100, "-");
 	$('input[name="node"]').prop('disabled', false).parent().css("opacity", "1.0");
-}
-})
+}})
 
 $('input[name="express"]').change(function () {
 if (this.checked) {
-	$('.priceClass').remove();
-	priceMaker(100, "+");
+	valueEditor(100, "+");
 	$('input[name="js-frameworks"]').prop('disabled', true).parent().css("opacity", "0.5");
 } else if (this.checked === false) {
-	$('.priceClass').remove();
-	priceMaker(100, "-");
+	valueEditor(100, "-");
 	$('input[name="js-frameworks"]').prop('disabled', false).parent().css("opacity", "1.0");
-}
-})
+}})
 
 $('input[name="node"]').change(function () {
 if (this.checked) {
-	$('.priceClass').remove();
-	priceMaker(100, "+");
+	valueEditor(100, "+");
 	$('input[name="js-libs"]').prop('disabled', true).parent().css("opacity", "0.5");
 } else if (this.checked === false) {
-	$('.priceClass').remove();
-	priceMaker(100, "-");
+	valueEditor(100, "-");
 	$('input[name="js-libs"]').prop('disabled', false).parent().css("opacity", "1.0");
-}
-})
+}})
 
 $('input[name="build-tools"]').change(function () {
 if (this.checked) {
-	$('.priceClass').remove();
-	priceMaker(100, "+");
+	valueEditor(100, "+");
 } else if (this.checked === false) {
-	$('.priceClass').remove();
-	priceMaker(100, "-");
-}
-})
+	valueEditor(100, "-");
+}})
 
 $('input[name="npm"]').change(function () {
 if (this.checked) {
-	$('.priceClass').remove();
-	priceMaker(100, "+");
+	valueEditor(100, "+");
 } else if (this.checked === false) {
-	$('.priceClass').remove();
-	priceMaker(100, "-");
-}
-})
+	valueEditor(100, "-");
+}})
 
 
 //Select Credit Card by Default
@@ -287,4 +272,3 @@ $("form").on('submit', function(e) {
 		}
 	}
 })
-
