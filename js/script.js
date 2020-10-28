@@ -17,11 +17,11 @@ The field is then removed if the user switches back to a different field.*/
 $('#title').on('change', function() {
 if ($('#title').val() === "other") {
 	$('#other-title').show();
-	$('#other-title-label').show(); }
-else if ($('#title').val() !== "other") {
-	$('#other-title').hide();
+	$('#other-title-label').show();
+		return; 
+	} $('#other-title').hide();
 	$('#other-title-label').hide();
-}})
+})
 
 // T-Shirt Info Function
 
@@ -33,7 +33,7 @@ $tColor.val("default");
 /* These "hide" and "show" colour functions will be called on in the following section, 
 depending on which design is selected*/
 
-function hideAllColours() {
+function hideColours() {
 $tColor.hide();	
 $tColor.prev().hide();
 }
@@ -43,37 +43,32 @@ $tColor.show();
 $tColor.prev().show();
 }
 
-hideAllColours();
+hideColours();
 
 // This function sets or hides the relevant t-shirt colours, depending on the user's design selection.
 
 $tDesign = $('#design');
+
 $tDesign.on('change', function() {
+
+	$tColor.children('option').css('display', 'none');
+	hideColours();
+	
 if ($tDesign.val() === "js puns") {
 	showColours();
 	$tColor.children('option[value="cornflowerblue"]').css('display','block');
 	$tColor.children('option[value="darkslategrey"]').css('display','block');
 	$tColor.children('option[value="gold"]').css('display','block');
-	$tColor.children('option[value="tomato"]').css('display','none');
-	$tColor.children('option[value="steelblue"]').css('display','none');
-	$tColor.children('option[value="dimgrey"]').css('display','none');
-	$tColor.children('option[value="default"]').css('display','none');
 	$tColor.val("cornflowerblue");
 }
 else if ($tDesign.val() === "heart js") {
 	showColours();
-	$tColor.children('option[value="cornflowerblue"]').css('display','none');
-	$tColor.children('option[value="darkslategrey"]').css('display','none');
-	$tColor.children('option[value="gold"]').css('display','none');
 	$tColor.children('option[value="tomato"]').css('display','block');
 	$tColor.children('option[value="steelblue"]').css('display','block');
 	$tColor.children('option[value="dimgrey"]').css('display','block');
-	$tColor.children('option[value="default"]').css('display','none');
 	$tColor.val("tomato");
 }
-else if ($tDesign.val() !== "js puns" || $tDesign.val() !== "heart js") {
-hideColours();
-}
+
 }); 
 
 
@@ -81,24 +76,20 @@ hideColours();
 
 $activities = $('.activities');
 let priceValue = '0';
-$totalPrice = `<p class="priceClass">Price: $${priceValue}</p>`;
 
 /* This function updates the price depending on two factors - the amount, and the symbol.
 When a checkbox is checked, a "+" symbol is sent to the function, increasing the price. When unchecked, a "-" is sent.*/
 
 function priceMaker(value, factor) {
-if (factor === '+') {
-priceValue += value;
-priceValue = parseInt(priceValue);
-$activities.append(`<p class="priceClass">Price: $${priceValue}</p>`);
-return priceValue;
-} else if (factor === '-') {
-priceValue -= value;
-priceValue = parseInt(priceValue);
-$activities.append(`<p class="priceClass">Price: $${priceValue}</p>`);
-return priceValue;
-}
-}
+	$('.priceClass').remove();
+	if (factor === '+') {
+		priceValue += value;
+	} else if (factor === '-') {
+		priceValue -= value; 
+	}
+	priceValue = parseInt(priceValue);
+	$activities.append(`<p class="priceClass">Price: $${priceValue}</p>`);
+	}
 
 /* The "Hide activities" section below was simplified by adding this function.
 The function simply removes the current price, before passing the new values on to the priceMaker function.*/
@@ -110,62 +101,39 @@ function valueEditor(value, symbol) {
 
 // Here, we update the price depending on the user's selection(s). Conflicting activities are also greyed out where necessary.
 
-$('input[name="all"]').change(function () {
+$('input[type="checkbox"]').change(function () {
+	$('input').prop('disabled', false).parent().css("opacity", "1.0");
+
+	val = 100;
+	fact = "-";
+
 	if (this.checked) {
-	valueEditor(200, "+");
-} else if (this.checked === false) {
-	valueEditor(200, "-");
-}})
+	fact = "+"
+	}
 
-$('input[name="js-frameworks"]').change(function () {
-if (this.checked) {
-	valueEditor(100, "+");
-	$('input[name="express"]').prop('disabled', true).parent().css("opacity", "0.5");
-} else if (this.checked === false) {
-	valueEditor(100, "-");
-	$('input[name="express"]').prop('disabled', false).parent().css("opacity", "1.0");
-}})
+	if ($(this).attr("name") == "all") {
+		val = 200;
+	}
 
-$('input[name="js-libs"]').change(function () {
-if (this.checked) {
-	valueEditor(100, "+");
-	$('input[name="node"]').prop('disabled', true).parent().css("opacity", "0.5");
-} else if (this.checked === false) {
-	valueEditor(100, "-");
-	$('input[name="node"]').prop('disabled', false).parent().css("opacity", "1.0");
-}})
+	if ($('input[name="js-frameworks"]').is(':checked')) {
+		$('input[name="express"]').prop('disabled', true).parent().css("opacity", "0.5");
+	}
 
-$('input[name="express"]').change(function () {
-if (this.checked) {
-	valueEditor(100, "+");
-	$('input[name="js-frameworks"]').prop('disabled', true).parent().css("opacity", "0.5");
-} else if (this.checked === false) {
-	valueEditor(100, "-");
-	$('input[name="js-frameworks"]').prop('disabled', false).parent().css("opacity", "1.0");
-}})
+	if ($('input[name="js-libs"]').is(':checked')) {
+		$('input[name="node"]').prop('disabled', true).parent().css("opacity", "0.5");
+	}
 
-$('input[name="node"]').change(function () {
-if (this.checked) {
-	valueEditor(100, "+");
-	$('input[name="js-libs"]').prop('disabled', true).parent().css("opacity", "0.5");
-} else if (this.checked === false) {
-	valueEditor(100, "-");
-	$('input[name="js-libs"]').prop('disabled', false).parent().css("opacity", "1.0");
-}})
+	if ($('input[name="express"]').is(':checked')) {
+		$('input[name="js-frameworks"]').prop('disabled', true).parent().css("opacity", "0.5");
+	}
 
-$('input[name="build-tools"]').change(function () {
-if (this.checked) {
-	valueEditor(100, "+");
-} else if (this.checked === false) {
-	valueEditor(100, "-");
-}})
+	if ($('input[name="node"]').is(':checked')) {
+		$('input[name="js-libs"]').prop('disabled', true).parent().css("opacity", "0.5");
+	}
 
-$('input[name="npm"]').change(function () {
-if (this.checked) {
-	valueEditor(100, "+");
-} else if (this.checked === false) {
-	valueEditor(100, "-");
-}})
+	priceMaker(val, fact);
+
+})
 
 
 /* Here I've set the default payment method to Credit Card, by hiding the other options.
@@ -181,21 +149,21 @@ let cardCall = true;
 // Payment Field Selector Function
 
 $('#payment').on('change', function () {
-if ($('#payment').val() === "paypal") {
 	$('#credit-card').hide();
 	$('#bitcoin').hide();
-	$('#paypal').show();
-	cardCall = false;
-} else if ($('#payment').val() === "bitcoin") {
-	$('#credit-card').hide();
-	$('#bitcoin').show();
 	$('#paypal').hide();
 	cardCall = false;
-} else {
+
+if ($('#payment').val() === "credit card") {
 	$('#credit-card').show();
-	$('#bitcoin').hide();
-	$('#paypal').hide();
 	cardCall = true;
+	return;
+}
+
+ if ($('#payment').val() === "paypal") {
+	$('#paypal').show();
+} else {
+	$('#bitcoin').show();
 }
 })
 
@@ -207,11 +175,11 @@ if ($('#name').val().length > 0 && $('#name').val().length < 4) {
 	$('form h2').remove();	
 	$('#name').css("border-color", "red").prev().css("color", "red");
 	$('form').prepend(`<h2 style="color:red">Please enter a name that is four letters or longer</h1>`);
-	} else {
+	return;
+	}
 	$('#name').css("border-color", "black").prev().css("color", "black");
 	$('form h2').remove();	
-	}
-})
+	})
 
 /* FORM Submission.
 This section first listens for a 'submit' event on the form.
@@ -226,6 +194,22 @@ Additionally, if they do not provide a number that is between 13-16 digits, a me
 the input requiring them to do so.
 */
 
+function highlight(tag, color, select) {
+	t = "#" + tag
+	$(t).css("border-color", color).prev().css("color", color);
+	if (select) {
+		selectFocus(tag);
+	}
+}
+
+function setDefault() {
+	highlight("name", "black", false);
+	highlight("mail", "black", false);
+	$('.activities legend').css("color", "black").css("font-weight", "normal");
+	$('#zip').css("color", "black").css("border-color", "black").css("font-weight", "normal").prev().css("color", "black");
+	$('#cvv').css("color", "black").css("border-color", "black").css("font-weight", "normal").prev().css("color", "black");
+}
+
 $("form").on('submit', function(e) {
 	const nameTest = $('#name').val();
 	const nameResult = /^[A-Za-z]+$/.test(nameTest);
@@ -239,25 +223,23 @@ $("form").on('submit', function(e) {
 	const cvvTest = $('#cvv').val();
 	const cvvResult = (/^[\d]{3}$/.test(cvvTest));
 
+	setDefault();
+
 	if (nameResult === false) {
 		e.preventDefault();
-		$('#name').css("border-color", "red").prev().css("color", "red");
-		selectFocus("name");
-	} else {
-		$('#name').css("border-color", "black").prev().css("color", "black");
-} if (emailResult === false) {
-		e.preventDefault();
-		$('#mail').css("border-color", "red").prev().css("color", "red");
-		selectFocus("mail");
-	} else {
-		$('#mail').css("border-color", "black").prev().css("color", "black");
+		highlight("name", "red", true)
 	}
+
+	if (emailResult === false) {
+		e.preventDefault();
+		highlight("mail", "red", true)
+	}
+
 	if (!isChecked) {
 		e.preventDefault();
 		$('.activities legend').css("color", "red").css("font-weight", "bold");
-	} else {
-		$('.activities legend').css("color", "black").css("font-weight", "normal");
-	}
+	} 
+
 	if (cardCall) {
 		if (!cardResult) {
 			e.preventDefault();
@@ -268,21 +250,19 @@ $("form").on('submit', function(e) {
 				$('#cc-num').css("border-color", "red").parent().append("<div class='warning'><b><p style='color:red'>Please add a 13-16 Digit Card Number!</p></b><br></div>");
 			}
 			$('#cc-num').css("border-color", "black").css("color", "red").css("font-weight", "bold").prev().css("color", "red");
-	} else {
-		$('#cc-num').css("border-color", "black").css("color", "black").css("font-weight", "normal").prev().css("color", "black");
-		$('.warning').remove();
-	}	
+		} else {
+			$('#cc-num').css("border-color", "black").css("color", "black").css("font-weight", "normal").prev().css("color", "black");
+			$('.warning').remove();
+		}
+
 		if (!zipResult) {
 			e.preventDefault();
 			$('#zip').css("color", "red").css("border-color", "red").css("font-weight", "bold").prev().css("color", "red");
-	} else {
-			$('#zip').css("color", "black").css("border-color", "black").css("font-weight", "normal").prev().css("color", "black");
-	}
+		}
+
 		if (!cvvResult) {
 			e.preventDefault();
 			$('#cvv').css("color", "red").css("border-color", "red").css("font-weight", "bold").prev().css("color", "red");
-		} else {
-			$('#cvv').css("color", "black").css("border-color", "black").css("font-weight", "normal").prev().css("color", "black");
 		}
 	}
 })
